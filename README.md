@@ -19,3 +19,10 @@ matched like so:
 | `tag1 tag2`             | Matches posts tagged with `tag1` and `tag2` (but not just `tag1`)                  |
 | `tag1 -tag2`            | Matches posts tagged with `tag1` but not `tag2`                                    |
 | `tag1 tag2 -tag3 -tag4` | Matches posts tagged with `tag1` and `tag2`, but not tagged with `tag3` nor `tag4` |
+
+## Reactions
+
+| Reaction | Reaction                                       |
+| -------- | ---------------------------------------------- |
+| 👎       | Delete post                                    |
+| 🚫       | Delete post and blacklist artist (if possible) |

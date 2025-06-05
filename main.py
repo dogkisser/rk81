@@ -186,7 +186,7 @@ async def subscriptions(interaction: discord.Interaction) -> None:
     subscriptions = Subscriptions.select().where(
         Subscriptions.discord_id == interaction.user.id
     )
-    result = [f"* `{s.name}`\n" for s in subscriptions] if subscriptions else "None"
+    result = [f"* `{s.site}`\n" for s in subscriptions] if subscriptions else "None"
 
     await interaction.response.send_message(result, ephemeral=True)
 
@@ -196,6 +196,27 @@ async def sync(interaction: discord.Interaction):
     """Sync commands globally"""
     await client.tree.sync()
     await interaction.response.send_message("Syncing", ephemeral=True)
+
+
+@client.event
+async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
+    channel = client.get_user(payload.user_id)
+    if not channel:
+        return
+
+    message = await channel.fetch_message(payload.message_id)
+
+    if "/rk81/" in message.embeds[0].footer.text:
+        if payload.emoji.name == "👎":
+            await message.delete()
+        elif payload.emoji.name == "🚫" and message.embeds[0].author:
+            author = message.embeds[0].author.name
+            if " " not in author:
+                Blacklists.insert(
+                    discord_id=payload.user_id, query=author
+                ).on_conflict_ignore().execute()
+
+            await message.delete()
 
 
 client.run(os.environ["RK81_DISCORD_TOKEN"])

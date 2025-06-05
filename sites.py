@@ -100,7 +100,7 @@ class Gelbooru(Site):
         self.rate_limit = AsyncLimiter(1, 1)
 
     def _extract_posts(self, data: dict) -> list:
-        return data["post"]
+        return data.get("post", [])
 
     async def newest_post_id(self) -> int:
         async with (
@@ -135,7 +135,7 @@ class Gelbooru(Site):
                         site=self.name,
                         image_url=post["sample_url"]
                         if post["sample_url"]
-                        else post["preview_url"],
+                        else post["file_url"],
                         post_link=f"https://{self.name}/index.php?page=post&s=view&id={post['id']}",
                         timestamp=datetime.utcfromtimestamp(post["change"]),
                         colour=self.colour,
